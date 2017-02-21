@@ -3,8 +3,9 @@
 
 GLfloat v[4][2];
 GLint  obj[5];
-int static count;
+int static count=0;
 bool handle=false;
+/*
 class ver_handle {
 public:
 	GLfloat ver[1];
@@ -12,34 +13,39 @@ public:
 		glBegin(GL_LINES);
 		glColor3f(1, 0, 0);
 		//	glVertex2f(15, 15);
-		glVertex2f(v[0][0] + 15, 480 - (v[0][1] + 15));
-		std::cout << v[0][0] << " " << v[0][1];
+		glVertex2f(ver[0] + 15, 480 - (ver[1] + 15));
+		//std::cout << v[0][0] << " " << v[0][1];
 		//	glVertex2f(0, 0);
-		glVertex2f(v[0][0] - 15, 480 - (v[0][1] - 15));
+		glVertex2f(ver[0] - 15, 480 - (ver[1] - 15));
 		glEnd();
 
 		glBegin(GL_LINES);
 		glColor3f(1, 0, 0);
 		//	glVertex2f(15, 15);
-		glVertex2f(v[0][0] - 15, 480 - (v[0][1] + 15));
-		std::cout << v[0][0] << " " << v[0][1];
+		glVertex2f(ver[0] - 15, 480 - (ver[1] + 15));
+		//std::cout << v[0][0] << " " << v[0][1];
 		//	glVertex2f(0, 0);
-		glVertex2f(v[0][0] + 15, 480 - (v[0][1] - 15));
+		glVertex2f(ver[0] + 15, 480 - (ver[1] - 15));
 		glEnd();
 	}
 
 
-};
+};*/
 
 
 
 void click_handle(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state==GLUT_DOWN) {
-		v[0][0] = x;
-		v[0][1] = y;
+
+
+		//ver_handle *a;
+		//a = new ver_handle;
+
+		
+		v[count][0] = x;
+		v[count][1] = y;
 		handle = true;
 		count++;
-		ver_handle *a = new ver_handle();
 		
 	}
 }
@@ -55,35 +61,53 @@ void render() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (handle == true) {
 		int i;
+		
 		for (i = 0; i < count; i++) {
-			ver_handle v;
-			v.cross();
-			//ver_handle::cross();
+			//ver_handle v;
+			//v.cross();
+
+			glPointSize(15);
+			glBegin(GL_POINTS);
+			glColor3f(0, 0, 1);
+			glVertex2f(v[i][0], 480 - v[i][1]);
+			glEnd();
+
 		}
+				if (count % 2 == 0) {
 
-		/*std::cout << "line called";
-		glBegin(GL_LINES);
-		glColor3f(1, 0, 0);
-	//	glVertex2f(15, 15);
-		glVertex2f(v[0][0] + 15, 480-(v[0][1] + 15));
-		std::cout << v[0][0] <<" "<< v[0][1];
-	//	glVertex2f(0, 0);
-		glVertex2f(v[0][0] - 15, 480 - (v[0][1] - 15));
-		glEnd();
+					i = 0;
+					glBegin(GL_LINES);
+					std::cout << "came to line";
+					glColor3f(0, 0, 0);
+					glVertex2f(v[i][0], 480 - v[i][1]);
+					glVertex2f(v[i + 1][0], 480 - v[i + 1][1]);
+					glEnd();
+				}
+				/*
+						std::cout << "line called";
+						glBegin(GL_LINES);
+						glColor3f(1, 0, 0);
+					//	glVertex2f(15, 15);
+						glVertex2f(v[0][0] , v[0][1]);
+						std::cout << v[0][0] <<" "<< v[0][1];
+					//	glVertex2f(0, 0);
+						glVertex2f(v[0][0] , v[0][1]);
+						glEnd();
 
-		glBegin(GL_LINES);
-		glColor3f(1, 0, 0);
-		//	glVertex2f(15, 15);
-		glVertex2f(v[0][0] - 15, 480 - (v[0][1] + 15));
-		std::cout << v[0][0] << " " << v[0][1];
-		//	glVertex2f(0, 0);
-		glVertex2f(v[0][0] + 15, 480 - (v[0][1] - 15));
-		glEnd();
-		handle = false;
-		*/
+						glBegin(GL_LINES);
+						glColor3f(1, 0, 0);
+						//	glVertex2f(15, 15);
+						glVertex2f(v[0][0] - 15, 480 - (v[0][1] + 15));
+						std::cout << v[0][0] << " " << v[0][1];
+						//	glVertex2f(0, 0);
+						glVertex2f(v[0][0] + 15, 480 - (v[0][1] - 15));
+						glEnd();
+						handle = false;
+					*/
 
-
-	}
+			
+		}
+	
 	glFlush();
 }
 
