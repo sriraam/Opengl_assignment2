@@ -44,7 +44,10 @@ void click_handle(int button, int state, int x, int y) {
 		
 		v[count][0] = x;
 		v[count][1] = y;
+		//v[count+1][0] = x;
+		//v[count+1][1] = y;
 		handle = true;
+		std::cout << "Mouse clicked";
 		count++;
 		
 	}
@@ -73,16 +76,22 @@ void render() {
 			glEnd();
 
 		}
-				if (count % 2 == 0) {
+		
+				i = 0;
+				int temp;
+				temp = count - (count % 2);
 
-					i = 0;
-					glBegin(GL_LINES);
-					std::cout << "came to line";
-					glColor3f(0, 0, 0);
-					glVertex2f(v[i][0], 480 - v[i][1]);
-					glVertex2f(v[i + 1][0], 480 - v[i + 1][1]);
-					glEnd();
-				}
+			while (i < temp ) {
+				
+				glBegin(GL_LINES);
+				std::cout << "came to line";
+				glColor3f(0, 0, 0);
+				glVertex2f(v[i][0], 480 - v[i][1]);
+				glVertex2f(v[i + 1][0], 480 - v[i + 1][1]);
+				glEnd();
+			i += 2;
+			}
+		
 				/*
 						std::cout << "line called";
 						glBegin(GL_LINES);
