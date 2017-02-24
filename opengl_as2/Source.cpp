@@ -15,6 +15,31 @@ enum draw_mode {
 
 
 bool handle=false;
+class Draw_Primitives {
+public:
+	int segment = 0;
+	virtual void draw() = 0;
+
+};
+class Line : public Draw_Primitives {
+public:
+	int ver[1][1];
+    void draw() {
+		glBegin(GL_LINES);
+		glVertex2f(ver[0][0],480-ver[0][1]);
+		glVertex2f(ver[1][0],480-ver[1][1]);
+		glEnd();
+}
+
+
+};
+class Rectangle : public Draw_Primitives {
+
+
+
+};
+
+
 /*
 class ver_handle {
 public:
