@@ -98,6 +98,10 @@ void init() {
 	glFlush();
 }
 
+
+
+
+
 void draw_line(int i_dp,int temp_dp) {
 	int i = i_dp;
 	int temp = temp_dp;
