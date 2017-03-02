@@ -1,14 +1,16 @@
 #include<GL\glut.h>
 #include<iostream>
 #include<vector>
+#include<math.h>
 
 
-GLfloat v[8][2];
+GLfloat v[15][2];
 GLint  obj[5];
 int static count = 0;
 int mode = 1;
 int count_ver = 0;
 int j = 0;
+int circle_segment = 10;
 
 
 std::vector<GLfloat> x_vec;
@@ -73,9 +75,9 @@ void click_handle(int button, int state, int x, int y) {
 void init() {
 	glClearColor(1, 1, 1, 1);
 	gluOrtho2D(0, 640, 0, 480);
-	x_vec.reserve(20);
-	y_vec.reserve(20);
-	current_mode.reserve(10);
+//	x_vec.reserve(20);
+//	y_vec.reserve(20);
+	//current_mode.reserve(10);
 	glFlush();
 }
 
@@ -129,6 +131,50 @@ void draw_polygon(int i_dp, int temp_dp) {
 	glEnd();
 }
 
+void draw_circle(int i_dp,int temp_dp) {
+	int i = i_dp;
+	int temp = temp_dp;
+
+	if (i<temp) {
+
+		std::vector<GLfloat> cir_x;
+		std::vector<GLfloat> cir_y;
+		//TODO find radius
+		GLfloat radius;
+		radius = sqrtf(x_vec[i]);
+		GLfloat xy_dis = pow(x_vec[i + 1] - x_vec[i],2)+ pow((480-y_vec[i + 1]) -(480- y_vec[i]), 2);
+		radius = sqrtf(xy_dis);
+		std::cout << "\nradius is :" << radius;
+		//TODO cal circumference
+		//TODO deg betwwen each line = circum/segment
+		GLfloat segment = 8;
+		int rad = (360) / segment;
+		int theta = 0;
+		//from 2nd ver point draw no. lines(circle) in loop till no. of segment
+
+        
+		/*for (int j = 0; j < segment; j++) {
+
+			std::cout << "\nEntered circle" << rad;
+			glVertex2f(x_vec[i] + (radius*cosf(theta)), 480 - y_vec[i] + (radius*sinf(theta)));
+			theta += rad;
+		}*/
+
+
+		glBegin(GL_LINE_LOOP);
+		
+		glVertex2f(x_vec[i+1],480-y_vec[i+1]);
+		for (int j = 0; j < segment; j++) {
+			std::cout << "\nEntered circle" << rad;
+			glVertex2f(x_vec[i]+(radius*cosf(theta)),480-y_vec[i]+(radius*sinf(theta)));
+			theta += rad;
+		}
+		glEnd();
+		//refer circle drawing algo
+	}
+
+}
+
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -138,7 +184,7 @@ void render() {
 			//ver_handle v;
 			//v.cross();
 
-			glPointSize(15);
+			glPointSize(7);
 			glBegin(GL_POINTS);
 			glColor3f(0, 0, 1);
 			//glVertex2f(v[i][0], 480 - v[i][1]);
@@ -188,6 +234,10 @@ void render() {
 				draw_polygon(i, temp);
 				i += count_ver;
 				
+			}
+			else if (current_mode[j] == 4) {
+				draw_circle(i,temp);
+				i += 2;
 			}
 		}
 
