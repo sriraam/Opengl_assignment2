@@ -10,7 +10,7 @@ int static count = 0;
 int mode = 1;
 int count_ver = 0;
 int j = 0;
-int circle_segment = 10;
+
 
 
 std::vector<GLfloat> x_vec;
@@ -147,9 +147,9 @@ void draw_circle(int i_dp,int temp_dp) {
 		std::cout << "\nradius is :" << radius;
 		//TODO cal circumference
 		//TODO deg betwwen each line = circum/segment
-		GLfloat segment = 8;
-		int rad = (360) / segment;
-		int theta = 0;
+		GLfloat segment = 10;
+		GLfloat rad = (2*3.14) / segment;
+		GLfloat theta = rad;
 		//from 2nd ver point draw no. lines(circle) in loop till no. of segment
 
         
