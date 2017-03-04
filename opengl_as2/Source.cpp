@@ -5,13 +5,20 @@
 
 
 GLfloat v[15][2];
+std::vector<GLfloat> x_point;
+std::vector<GLfloat> y_point;
+
+std::vector<GLint> poly_arr(10);
+int static poly_count = 0;
+
+
+static bool draw_mode = true;
+
 GLint  obj[5];
 int static count = 0;
 int mode = 1;
 int count_ver = 0;
 int j = 0;
-
-
 
 std::vector<GLfloat> x_vec;
 std::vector<GLfloat> y_vec;
@@ -30,6 +37,12 @@ enum draw_mode {
 void menuhandler(int a) {
 	mode = a;
 	current_mode.push_back(mode);
+	draw_mode = true;
+	if (mode == 3) {
+		std::cout << "poly_count" << poly_count;
+		poly_count++;
+		count_ver = 0;
+	}
 }
 
 void menufunc() {
@@ -46,22 +59,43 @@ void click_handle(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 
 		//Default mode is line
-	//	if (current_mode.size() == 0) {
-		//	std::cout << "size =0";
-			//current_mode.push_back(1);
-	//	}
+		if (current_mode.size() == 0) {
+			std::cout << "size =0";
+			current_mode.push_back(1);
+		}
 		//For vertex point generation
-		v[count][0] = x;
-		v[count][1] = y;
+		//v[count][0] = x;
+	//	v[count][1] = y;
+		if (draw_mode == false) {
+		int lastmode = current_mode.back();
+			current_mode.push_back(lastmode);
+		if (lastmode == 3) {
+			std::cout << "autopoly_count" << poly_count;
+			poly_count++;
+			count_ver = 0;
+		}
+		}
+
+		y_point.push_back(y);
+		x_point.push_back(x);
+
 
 		//To keep track of ver for primitive gen
 		x_vec.push_back(x);
 		y_vec.push_back(y);
 
 		//if it is Polygon mode count_ver
+
+
 		if (current_mode[current_mode.size() - 1] == 3) {
+
 			std::cout << "countver" << count_ver<<"\n";
+			//to set unlimited polygons
 			count_ver++;
+
+			poly_arr.at(poly_count) = count_ver;
+
+
 		}
 
 
@@ -95,10 +129,9 @@ void draw_line(int i_dp, int temp_dp) {
 		glVertex2f(x_vec[i], 480 - y_vec[i]);
 		glVertex2f(x_vec[i + 1], 480 - y_vec[i + 1]);
 		glEnd();
+		draw_mode = false;
 
 	}
-
-
 }
 
 void draw_rect(int i_dp, int temp_dp) {
@@ -113,22 +146,31 @@ void draw_rect(int i_dp, int temp_dp) {
 		glVertex2f(x_vec[i + 1], 480 - y_vec[i + 1]);
 		glVertex2f(x_vec[i + 1], 480 - y_vec[i]);
 		glEnd();
+		draw_mode = false;
+
 
 	}
 }
 
-void draw_polygon(int i_dp, int temp_dp) {
+void draw_polygon(int i_dp, int p_count) {
 	int i = i_dp;
-	int temp = temp_dp;
+	int poly_count = p_count;
+	int ply = 1;
 	glBegin(GL_LINE_LOOP);
 	std::cout << "in polygon\n"<<"i :"<<i<<" count_ver is"<<count_ver<<"\n";
 	glColor3f(0, 0, 0);
-	for (i,j=0; j < count_ver; i++,j++) {
-		std::cout << "in line loop\n";
-		glVertex2f(x_vec[i], 480 - y_vec[i]);
-		//glVertex2f(x_vec[i+1], 480 - y_vec[i+1]);
+	std::cout << "poly_count"<<poly_count;
+	while (ply<=poly_count) {
+		for (i, j = 0; j < poly_arr[ply]; i++, j++) {
+			std::cout << "in line loop\n"<<"ply_ver"<< poly_arr[ply];
+			glVertex2f(x_vec[i], 480 - y_vec[i]);
+			//glVertex2f(x_vec[i+1], 480 - y_vec[i+1]);
+		}
+		glEnd();
+		ply++;
+		//draw_mode = false;
+
 	}
-	glEnd();
 }
 
 void draw_circle(int i_dp,int temp_dp) {
@@ -144,10 +186,10 @@ void draw_circle(int i_dp,int temp_dp) {
 		radius = sqrtf(x_vec[i]);
 		GLfloat xy_dis = pow(x_vec[i + 1] - x_vec[i],2)+ pow((480-y_vec[i + 1]) -(480- y_vec[i]), 2);
 		radius = sqrtf(xy_dis);
-		std::cout << "\nradius is :" << radius;
+		//std::cout << "\nradius is :" << radius;
 		//TODO cal circumference
 		//TODO deg betwwen each line = circum/segment
-		GLfloat segment = 10;
+		GLfloat segment = 100;
 		GLfloat rad = (2*3.14) / segment;
 		GLfloat theta = rad;
 		//from 2nd ver point draw no. lines(circle) in loop till no. of segment
@@ -165,11 +207,13 @@ void draw_circle(int i_dp,int temp_dp) {
 		
 		glVertex2f(x_vec[i+1],480-y_vec[i+1]);
 		for (int j = 0; j < segment; j++) {
-			std::cout << "\nEntered circle" << rad;
+		//	std::cout << "\nEntered circle" << rad;
 			glVertex2f(x_vec[i]+(radius*cosf(theta)),480-y_vec[i]+(radius*sinf(theta)));
 			theta += rad;
 		}
 		glEnd();
+		draw_mode = false;
+
 		//refer circle drawing algo
 	}
 
@@ -201,44 +245,42 @@ void render() {
 		std::cout << "\n";
 		for (int j = 0; j < current_mode.size(); j++) {
 
+			std::cout << "current mode" << current_mode[j];
+			draw_mode = true;
 			//To set the temp var which prevents the draw of primitive at very first click
 			//Or it will draw from origin to first click
 			//So on every second click, the line drawn from first to second  
 			if (i % 2 != 0) {
-				std::cout << "Entered temp decrementer";
 				temp = (count - 1) - ((count - 1) % 2);
 			}
 			else {
-				std::cout << "Entered else temp decrementer";
 				temp = (count)-((count) % 2);
 			}
 
 
 			if (current_mode[j] == 1) {
-
-				std::cout << "j :" << j << " val is" << current_mode[j];
-				std::cout << "\nEntered line\n" << "i" << i << "temp" << temp;
 			
 				draw_line(i, temp);
 				i += 2;
 			}
 			else if (current_mode[j] == 2) {
 
-				std::cout << "j :" << j << " val is" << current_mode[j];
-				std::cout << "\nEntered rect\n";
 				draw_rect(i, temp);
 				i += 2;
 			}
 			else if (current_mode[j] == 3) {
-				std::cout << "entered polygon\n";
-				draw_polygon(i, temp);
+				
+				draw_polygon(i, poly_count);
 				i += count_ver;
+				
 				
 			}
 			else if (current_mode[j] == 4) {
+		//		std::cout << "circle";
 				draw_circle(i,temp);
 				i += 2;
 			}
+			
 		}
 
 		/*
