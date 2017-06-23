@@ -1,2 +1,2 @@
 # Opengl_assignment2
-small 2D vector graphics software
+small 2D primitive drawing software
